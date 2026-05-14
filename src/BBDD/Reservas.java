@@ -33,8 +33,9 @@ public class Reservas extends JFrame {
 	private JTable tablaReservas;
 	private DefaultTableModel modelo;
 
-	// Nombre del usuario (lo puedes cambiar según Login)
+	// Datos del usuario que inició sesión
 	private String usuarioActual = "UsuarioEjemplo";
+	private int idUsuario = -1;
 
 	public ConexionMySQL conexion = new ConexionMySQL("root", "", "agencia-viajes");
 
@@ -51,7 +52,19 @@ public class Reservas extends JFrame {
 		});
 	}
 
+	// Constructor usado desde Login: recibe el nombre e ID del usuario
+	public Reservas(String usuario, int idUsuario) {
+		this.usuarioActual = usuario;
+		this.idUsuario = idUsuario;
+		init();
+	}
+
+	// Constructor sin argumentos (para pruebas directas)
 	public Reservas() {
+		init();
+	}
+
+	private void init() {
 
 		setTitle("Historial de Reservas");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

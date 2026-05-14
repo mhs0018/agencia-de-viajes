@@ -215,9 +215,7 @@ public class Reservas extends JFrame {
 		}
 	}
 
-	/**
-	 * Permite editar los datos de la reserva seleccionada mediante diálogos.
-	 */
+	// Permite editar los datos de la reserva seleccionada mediante diálogos.
 	private void modificarReserva() {
 		int fila = tablaReservas.getSelectedRow();
 		if (fila == -1) {

@@ -19,8 +19,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /*
- * Clase LeerReserva
- * -------------------
  * Esta ventana muestra todas las reservas en una tabla.
  * Antes había un menú desplegable, pero ahora lo cambiamos
  * por 3 botones: Crear, Modificar y Eliminar.

@@ -87,40 +87,24 @@ public class Reservas extends JFrame {
 
 		btnCrear.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// Abre la ventana para crear una nueva reserva
-				CrearReserva nueva = new CrearReserva();
-				nueva.setVisible(true);
+				nuevaReserva();
 			}
 		});
+
+		// Cargar las reservas del usuario al abrir la ventana
+		cargarReservas();
 
 		// -----------------------------
 		// BOTÓN MODIFICAR RESERVA
 		// -----------------------------
-		JButton btnModificar = new JButton("Modificar");
-		btnModificar.setBounds(500, 110, 150, 30);
-		contentPane.add(btnModificar);
-
-		btnModificar.addActionListener(new ActionListener() {
+		JButton btn_Modificar = new JButton("Modificar");
+		btn_Modificar.setBounds(500, 110, 150, 30);
+		btn_Modificar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
-				// Compruebo si hay una fila seleccionada
-				int fila = tablaReservas.getSelectedRow();
-
-				if (fila == -1) {
-					System.out.println("Seleccione una reserva para editar");
-					return;
-				}
-
-				// Obtengo los datos de la reserva seleccionada
-				String destino = tablaReservas.getValueAt(fila, 1).toString();
-				String fecha = tablaReservas.getValueAt(fila, 2).toString();
-				String presupuesto = tablaReservas.getValueAt(fila, 3).toString();
-
-				// Abro la ventana de crear reserva pero con los datos cargados
-				CrearReserva editar = new CrearReserva(destino, fecha, presupuesto);
-				editar.setVisible(true);
+				modificarReserva();
 			}
 		});
+		contentPane.add(btn_Modificar);
 
 		// -----------------------------
 		// BOTÓN ELIMINAR RESERVA
@@ -134,6 +118,7 @@ public class Reservas extends JFrame {
 				eliminarReserva();
 			}
 		});
+		contentPane.add(btnEliminar);
 
 		// Cargo las reservas al iniciar la ventana
 		cargarReservas();
@@ -173,7 +158,7 @@ public class Reservas extends JFrame {
 
 	// MÉTODOS
 
-	// Método para eliminar la reserva seleccionada en la tabla
+	// Eliminar la reserva seleccionada en la tabla
 	private void eliminarReserva() {
 		int fila = tablaReservas.getSelectedRow();
 		if (fila == -1) {
@@ -199,6 +184,84 @@ public class Reservas extends JFrame {
 				ex.printStackTrace();
 				JOptionPane.showMessageDialog(null, "Error al eliminar: " + ex.getMessage());
 			}
+		}
+	}
+
+	// Introducir una nueva reserva en la BBDD
+	private void nuevaReserva() {
+		String destino = JOptionPane.showInputDialog(null, "Destino:");
+		if (destino == null || destino.trim().isEmpty())
+			return;
+
+		String fecha = JOptionPane.showInputDialog(null, "Fecha (YYYY-MM-DD):");
+		if (fecha == null || fecha.trim().isEmpty())
+			return;
+
+		String presupuesto = JOptionPane.showInputDialog(null, "Presupuesto:");
+		if (presupuesto == null || presupuesto.trim().isEmpty())
+			return;
+
+		try {
+			conexion.conectar();
+			String sql = "INSERT INTO reserva (destino, fecha, presupuesto, id_usuario) VALUES ('"
+					+ destino + "', '" + fecha + "', '" + presupuesto + "', " + idUsuario + ")";
+			conexion.ejecutarInsertDeleteUpdate(sql);
+			conexion.desconectar();
+			cargarReservas(); // Recarga la tabla para mostrar la nueva fila con su id
+			JOptionPane.showMessageDialog(null, "Reserva añadida correctamente.");
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Error al añadir reserva: " + ex.getMessage());
+		}
+	}
+
+	/**
+	 * Permite editar los datos de la reserva seleccionada mediante diálogos.
+	 */
+	private void modificarReserva() {
+		int fila = tablaReservas.getSelectedRow();
+		if (fila == -1) {
+			JOptionPane.showMessageDialog(null, "Selecciona una reserva para modificar.");
+			return;
+		}
+
+		int idReserva = (int) modelo.getValueAt(fila, 0);
+		String destino = (String) modelo.getValueAt(fila, 1);
+		String fecha = (String) modelo.getValueAt(fila, 2);
+		String presupuesto = (String) modelo.getValueAt(fila, 3);
+
+		// Diálogos con los valores actuales precargados
+		String nuevoDestino = JOptionPane.showInputDialog(null, "Destino:", destino);
+		if (nuevoDestino == null)
+			return; // Cancelado
+
+		String nuevaFecha = JOptionPane.showInputDialog(null, "Fecha (YYYY-MM-DD):", fecha);
+		if (nuevaFecha == null)
+			return;
+
+		String nuevoPresupuesto = JOptionPane.showInputDialog(null, "Presupuesto:", presupuesto);
+		if (nuevoPresupuesto == null)
+			return;
+
+		try {
+			conexion.conectar();
+			String sql = "UPDATE reserva SET "
+					+ "destino = '" + nuevoDestino + "', "
+					+ "fecha = '" + nuevaFecha + "', "
+					+ "presupuesto = '" + nuevoPresupuesto + "' "
+					+ "WHERE id_reserva = " + idReserva;
+			conexion.ejecutarInsertDeleteUpdate(sql);
+			conexion.desconectar();
+
+			// Actualiza la tabla visualmente sin recargar de la BD
+			modelo.setValueAt(nuevoDestino, fila, 1);
+			modelo.setValueAt(nuevaFecha, fila, 2);
+			modelo.setValueAt(nuevoPresupuesto, fila, 3);
+
+			JOptionPane.showMessageDialog(null, "Reserva modificada correctamente.");
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Error al modificar: " + ex.getMessage());
 		}
 	}
 }

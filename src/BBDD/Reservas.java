@@ -9,6 +9,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JLabel;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import java.awt.event.ActionListener;
@@ -32,6 +33,7 @@ public class Reservas extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTable tablaReservas;
+	private DefaultTableModel modelo;
 
 	// Nombre del usuario (lo puedes cambiar según Login)
 	private String usuarioActual = "UsuarioEjemplo";
@@ -42,7 +44,7 @@ public class Reservas extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					LeerReserva frame = new LeerReserva();
+					Reservas frame = new Reservas();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -77,9 +79,9 @@ public class Reservas extends JFrame {
 		scrollPane.setViewportView(tablaReservas);
 
 		// -----------------------------
-		// BOTÓN 1: CREAR RESERVA
+		// BOTÓN CREAR RESERVA
 		// -----------------------------
-		JButton btnCrear = new JButton("Crear Reserva");
+		JButton btnCrear = new JButton("Nueva Reserva");
 		btnCrear.setBounds(500, 60, 150, 30);
 		contentPane.add(btnCrear);
 
@@ -92,9 +94,9 @@ public class Reservas extends JFrame {
 		});
 
 		// -----------------------------
-		// BOTÓN 2: MODIFICAR RESERVA
+		// BOTÓN MODIFICAR RESERVA
 		// -----------------------------
-		JButton btnModificar = new JButton("Modificar Reserva");
+		JButton btnModificar = new JButton("Modificar");
 		btnModificar.setBounds(500, 110, 150, 30);
 		contentPane.add(btnModificar);
 
@@ -105,7 +107,7 @@ public class Reservas extends JFrame {
 				int fila = tablaReservas.getSelectedRow();
 
 				if (fila == -1) {
-					System.out.println("No hay fila seleccionada");
+					System.out.println("Seleccione una reserva para editar");
 					return;
 				}
 
@@ -121,7 +123,7 @@ public class Reservas extends JFrame {
 		});
 
 		// -----------------------------
-		// BOTÓN 3: ELIMINAR RESERVA
+		// BOTÓN ELIMINAR RESERVA
 		// -----------------------------
 		JButton btnEliminar = new JButton("Eliminar Reserva");
 		btnEliminar.setBounds(500, 160, 150, 30);
@@ -129,29 +131,7 @@ public class Reservas extends JFrame {
 
 		btnEliminar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
-				// Compruebo si hay una fila seleccionada
-				int fila = tablaReservas.getSelectedRow();
-
-				if (fila == -1) {
-					System.out.println("No hay fila seleccionada");
-					return;
-				}
-
-				// Obtengo el ID de la reserva
-				int id = Integer.parseInt(tablaReservas.getValueAt(fila, 0).toString());
-
-				try {
-					conexion.conectar();
-					String sql = "DELETE FROM reservas WHERE id=" + id;
-					conexion.ejecutarInsertDeleteUpdate(sql);
-					conexion.desconectar();
-				} catch (SQLException ex) {
-					ex.printStackTrace();
-				}
-
-				// Recargo la tabla después de eliminar
-				cargarReservas();
+				eliminarReserva();
 			}
 		});
 
@@ -162,7 +142,7 @@ public class Reservas extends JFrame {
 	// Método para cargar todas las reservas en la tabla
 	private void cargarReservas() {
 
-		DefaultTableModel modelo = new DefaultTableModel();
+		modelo = new DefaultTableModel();
 		modelo.addColumn("ID");
 		modelo.addColumn("Destino");
 		modelo.addColumn("Fecha");
@@ -189,5 +169,36 @@ public class Reservas extends JFrame {
 		}
 
 		tablaReservas.setModel(modelo);
+	}
+
+	// MÉTODOS
+
+	// Método para eliminar la reserva seleccionada en la tabla
+	private void eliminarReserva() {
+		int fila = tablaReservas.getSelectedRow();
+		if (fila == -1) {
+			JOptionPane.showMessageDialog(null, "Selecciona una reserva para eliminar.");
+			return;
+		}
+
+		int idReserva = (int) modelo.getValueAt(fila, 0);
+
+		int confirmacion = JOptionPane.showConfirmDialog(null,
+				"¿Seguro que quieres eliminar esta reserva?",
+				"Confirmar eliminación", JOptionPane.YES_NO_OPTION);
+
+		if (confirmacion == JOptionPane.YES_OPTION) {
+			try {
+				conexion.conectar();
+				String sql = "DELETE FROM reserva WHERE id_reserva = " + idReserva;
+				conexion.ejecutarInsertDeleteUpdate(sql);
+				conexion.desconectar();
+				modelo.removeRow(fila); // Quita la fila de la tabla visualmente
+				JOptionPane.showMessageDialog(null, "Reserva eliminada correctamente.");
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+				JOptionPane.showMessageDialog(null, "Error al eliminar: " + ex.getMessage());
+			}
+		}
 	}
 }

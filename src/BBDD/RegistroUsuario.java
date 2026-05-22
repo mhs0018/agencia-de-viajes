@@ -47,7 +47,7 @@ public class RegistroUsuario extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		JLabel lbl_Titulo = new JLabel("Â¡Bienvenido!");
+		JLabel lbl_Titulo = new JLabel("Nuevo Usuario");
 		lbl_Titulo.setFont(new Font("Tahoma", Font.PLAIN, 25));
 		lbl_Titulo.setBounds(151, 10, 145, 22);
 		contentPane.add(lbl_Titulo);
@@ -57,7 +57,7 @@ public class RegistroUsuario extends JFrame {
 		lbl_Usuario.setBounds(48, 42, 84, 18);
 		contentPane.add(lbl_Usuario);
 
-		JLabel lbl_Pass = new JLabel("ContraseÃ±a");
+		JLabel lbl_Pass = new JLabel("Contraseña");
 		lbl_Pass.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		lbl_Pass.setBounds(48, 70, 108, 22);
 		contentPane.add(lbl_Pass);
@@ -114,7 +114,7 @@ public class RegistroUsuario extends JFrame {
 					String nombreApellido = text_NombreA.getText();
 					String dni = text_DNI.getText();
 					String email = text_Email.getText();
-					String sql = "INSERT INTO USUARIOS (USUARIO,CONTRASEÃ‘A,NOMBRE_COMPLETO,DNI,EMAIL) VALUES ('"
+					String sql = "INSERT INTO USUARIOS (USUARIO,CONTRASEÑA,NOMBRE_COMPLETO,DNI,EMAIL) VALUES ('"
 							+ nombre + ",'" + contrasena + ",'" + nombreApellido + ",'" + dni + ",'" + email + "')";
 					conexion.ejecutarInsertDeleteUpdate(sql);
 					conexion.desconectar();

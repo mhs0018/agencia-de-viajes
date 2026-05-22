@@ -103,7 +103,7 @@ public class ModificarReserva extends JFrame {
 				ventanaReservas.recargarReservas();
 			}
 
-			JOptionPane.showMessageDialog(null, "Reserva modificada correctamente.");
+			JOptionPane.showMessageDialog(null, "Reserva modificada correctamente");
 			dispose();
 		} catch (SQLException ex) {
 			ex.printStackTrace();

@@ -140,15 +140,15 @@ public class Reservas extends JFrame {
 	private void eliminarReserva() {
 		int fila = table.getSelectedRow();
 		if (fila == -1) {
-			JOptionPane.showMessageDialog(null, "Selecciona una reserva para eliminar.");
+			JOptionPane.showMessageDialog(null, "Seleccione una reserva para eliminar");
 			return;
 		}
 
 		int idReserva = (int) modelo.getValueAt(fila, 0);
 
 		int confirmacion = JOptionPane.showConfirmDialog(null,
-				"¿Seguro que quieres eliminar esta reserva?",
-				"Confirmar eliminación", JOptionPane.YES_NO_OPTION);
+				"¿Seguro que quiere eliminar esta reserva?",
+				"Confirmar", JOptionPane.YES_NO_OPTION);
 
 		if (confirmacion == JOptionPane.YES_OPTION) {
 			try {
@@ -156,7 +156,7 @@ public class Reservas extends JFrame {
 				String sql = "DELETE FROM reserva WHERE id_reserva = " + idReserva;
 				conexion.ejecutarInsertDeleteUpdate(sql);
 				modelo.removeRow(fila);
-				JOptionPane.showMessageDialog(null, "Reserva eliminada correctamente.");
+				JOptionPane.showMessageDialog(null, "Reserva eliminada");
 			} catch (SQLException ex) {
 				ex.printStackTrace();
 				JOptionPane.showMessageDialog(null, "Error al eliminar: " + ex.getMessage());

@@ -105,7 +105,7 @@ public class CrearReserva extends JFrame {
         String presupuesto = textPresupuesto.getText().trim();
 
         if (destino.isEmpty() || fecha.isEmpty() || presupuesto.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Rellena todos los campos");
+            JOptionPane.showMessageDialog(null, "Rellene todos los campos");
             return;
         }
 
@@ -113,7 +113,7 @@ public class CrearReserva extends JFrame {
             conexion.conectar();
 
             if (!fechaDisponible(fecha)) {
-                JOptionPane.showMessageDialog(null, "Introduzca una fecha disponible.");
+                JOptionPane.showMessageDialog(null, "Introduzca una fecha disponible");
                 return;
             }
 
@@ -126,7 +126,7 @@ public class CrearReserva extends JFrame {
                     ventanaReservas.recargarReservas();
                 }
 
-                JOptionPane.showMessageDialog(null, "Reserva añadida correctamente.");
+                JOptionPane.showMessageDialog(null, "Reserva realizada");
                 dispose();
                 return;
             }

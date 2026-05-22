@@ -86,7 +86,7 @@ public class Login extends JFrame {
 				String pass = text_Pass.getText().trim();
 
 				if (pass.length() != 12) {
-					JOptionPane.showMessageDialog(null, "La contraseña debe tener exactamente 12 caracteres.");
+					JOptionPane.showMessageDialog(null, "La contraseña debe tener exactamente 12 caracteres");
 					return;
 				}
 
@@ -97,13 +97,13 @@ public class Login extends JFrame {
 					ResultSet rs = conexion.ejecutarSelect(sql);
 
 					if (!rs.next()) {
-						JOptionPane.showMessageDialog(null, "El usuario no se encuentra en la base de datos.");
+						JOptionPane.showMessageDialog(null, "El usuario no existe");
 						return;
 					}
 
 					String passGuardada = rs.getString("contraseña");
 					if (!pass.equals(passGuardada)) {
-						JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos.");
+						JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos");
 						return;
 					}
 

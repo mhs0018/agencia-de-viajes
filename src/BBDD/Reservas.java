@@ -22,16 +22,12 @@ public class Reservas extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 
-	// Conexión con la base de datos
 	public ConexionMySQL conexion = new ConexionMySQL("root", "", "agencia-viajes");
 
 	private JTable table;
 	private DefaultTableModel modelo;
-	private int idUsuario; // ID del cliente logueado
+	private int idUsuario;
 
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -45,9 +41,6 @@ public class Reservas extends JFrame {
 		});
 	}
 
-	/**
-	 * Constructor: recibe el nombre de usuario y su id para filtrar sus reservas.
-	 */
 	public Reservas(String usuarioLogueado, int idUsuario) {
 		this.idUsuario = idUsuario;
 
@@ -58,24 +51,20 @@ public class Reservas extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		// Título
 		JLabel lbl_Titulo = new JLabel("Mis Reservas - " + usuarioLogueado);
 		lbl_Titulo.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		lbl_Titulo.setBounds(10, 10, 500, 25);
 		contentPane.add(lbl_Titulo);
 
-		// Modelo con 4 columnas: id_reserva (oculta), Destino, Fecha, Presupuesto
 		modelo = new DefaultTableModel(
 				new Object[] { "id_reserva", "Destino", "Fecha", "Presupuesto" }, 0) {
 			@Override
 			public boolean isCellEditable(int row, int column) {
-				return false; // No se puede editar directamente en la tabla
+				return false;
 			}
 		};
 
 		table = new JTable(modelo);
-
-		// Ocultar la columna id_reserva (columna 0) — se usa internamente
 		table.getColumnModel().getColumn(0).setMinWidth(0);
 		table.getColumnModel().getColumn(0).setMaxWidth(0);
 		table.getColumnModel().getColumn(0).setWidth(0);
@@ -84,7 +73,6 @@ public class Reservas extends JFrame {
 		scrollPane.setBounds(10, 50, 500, 200);
 		contentPane.add(scrollPane);
 
-		// ── Botón ELIMINAR ──────────────────────────────────────────────────
 		JButton btn_Eliminar = new JButton("Eliminar");
 		btn_Eliminar.setBounds(10, 270, 140, 30);
 		btn_Eliminar.addActionListener(new ActionListener() {
@@ -94,7 +82,6 @@ public class Reservas extends JFrame {
 		});
 		contentPane.add(btn_Eliminar);
 
-		// ── Botón MODIFICAR ─────────────────────────────────────────────────
 		JButton btn_Modificar = new JButton("Modificar");
 		btn_Modificar.setBounds(165, 270, 140, 30);
 		btn_Modificar.addActionListener(new ActionListener() {
@@ -104,7 +91,6 @@ public class Reservas extends JFrame {
 		});
 		contentPane.add(btn_Modificar);
 
-		// ── Botón NUEVA RESERVA ─────────────────────────────────────────────
 		JButton btn_Nueva = new JButton("Nueva Reserva");
 		btn_Nueva.setBounds(320, 270, 160, 30);
 		btn_Nueva.addActionListener(new ActionListener() {
@@ -114,15 +100,11 @@ public class Reservas extends JFrame {
 		});
 		contentPane.add(btn_Nueva);
 
-		// Cargar las reservas del usuario al abrir la ventana
 		cargarReservas();
 	}
 
-	/**
-	 * Consulta la BD y rellena la tabla con las reservas del usuario.
-	 */
 	private void cargarReservas() {
-		modelo.setRowCount(0); // Limpia filas anteriores
+		modelo.setRowCount(0);
 		try {
 			conexion.conectar();
 			String sql = "SELECT id_reserva, destino, fecha, presupuesto "
@@ -136,16 +118,22 @@ public class Reservas extends JFrame {
 						rs.getString("presupuesto")
 				});
 			}
-			conexion.desconectar();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 			JOptionPane.showMessageDialog(null, "Error al cargar reservas: " + ex.getMessage());
+		} finally {
+			try {
+				conexion.desconectar();
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			}
 		}
 	}
 
-	/**
-	 * Elimina la reserva seleccionada en la tabla de la BD y de la vista.
-	 */
+	public void recargarReservas() {
+		cargarReservas();
+	}
+
 	private void eliminarReserva() {
 		int fila = table.getSelectedRow();
 		if (fila == -1) {
@@ -164,19 +152,21 @@ public class Reservas extends JFrame {
 				conexion.conectar();
 				String sql = "DELETE FROM reserva WHERE id_reserva = " + idReserva;
 				conexion.ejecutarInsertDeleteUpdate(sql);
-				conexion.desconectar();
-				modelo.removeRow(fila); // Quita la fila de la tabla visualmente
+				modelo.removeRow(fila);
 				JOptionPane.showMessageDialog(null, "Reserva eliminada correctamente.");
 			} catch (SQLException ex) {
 				ex.printStackTrace();
 				JOptionPane.showMessageDialog(null, "Error al eliminar: " + ex.getMessage());
+			} finally {
+				try {
+					conexion.desconectar();
+				} catch (SQLException ex) {
+					ex.printStackTrace();
+				}
 			}
 		}
 	}
 
-	/**
-	 * Permite editar los datos de la reserva seleccionada mediante diálogos.
-	 */
 	private void modificarReserva() {
 		int fila = table.getSelectedRow();
 		if (fila == -1) {
@@ -184,67 +174,54 @@ public class Reservas extends JFrame {
 			return;
 		}
 
-		int    idReserva   = (int)    modelo.getValueAt(fila, 0);
-		String destino     = (String) modelo.getValueAt(fila, 1);
-		String fecha       = (String) modelo.getValueAt(fila, 2);
+		int idReserva = (int) modelo.getValueAt(fila, 0);
+		String destino = (String) modelo.getValueAt(fila, 1);
+		String fecha = (String) modelo.getValueAt(fila, 2);
 		String presupuesto = (String) modelo.getValueAt(fila, 3);
 
-		// Diálogos con los valores actuales precargados
 		String nuevoDestino = JOptionPane.showInputDialog(null, "Destino:", destino);
-		if (nuevoDestino == null) return; // Cancelado
+		if (nuevoDestino == null) {
+			return;
+		}
 
 		String nuevaFecha = JOptionPane.showInputDialog(null, "Fecha (YYYY-MM-DD):", fecha);
-		if (nuevaFecha == null) return;
+		if (nuevaFecha == null) {
+			return;
+		}
 
 		String nuevoPresupuesto = JOptionPane.showInputDialog(null, "Presupuesto:", presupuesto);
-		if (nuevoPresupuesto == null) return;
+		if (nuevoPresupuesto == null) {
+			return;
+		}
 
 		try {
 			conexion.conectar();
 			String sql = "UPDATE reserva SET "
-					+ "destino = '"     + nuevoDestino     + "', "
-					+ "fecha = '"       + nuevaFecha        + "', "
-					+ "presupuesto = '" + nuevoPresupuesto  + "' "
+					+ "destino = '" + nuevoDestino + "', "
+					+ "fecha = '" + nuevaFecha + "', "
+					+ "presupuesto = '" + nuevoPresupuesto + "' "
 					+ "WHERE id_reserva = " + idReserva;
 			conexion.ejecutarInsertDeleteUpdate(sql);
-			conexion.desconectar();
 
-			// Actualiza la tabla visualmente sin recargar de la BD
-			modelo.setValueAt(nuevoDestino,    fila, 1);
-			modelo.setValueAt(nuevaFecha,      fila, 2);
+			modelo.setValueAt(nuevoDestino, fila, 1);
+			modelo.setValueAt(nuevaFecha, fila, 2);
 			modelo.setValueAt(nuevoPresupuesto, fila, 3);
 
 			JOptionPane.showMessageDialog(null, "Reserva modificada correctamente.");
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 			JOptionPane.showMessageDialog(null, "Error al modificar: " + ex.getMessage());
+		} finally {
+			try {
+				conexion.desconectar();
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			}
 		}
 	}
 
-	/**
-	 * Muestra diálogos para introducir una nueva reserva y la guarda en la BD.
-	 */
 	private void nuevaReserva() {
-		String destino = JOptionPane.showInputDialog(null, "Destino:");
-		if (destino == null || destino.trim().isEmpty()) return;
-
-		String fecha = JOptionPane.showInputDialog(null, "Fecha (YYYY-MM-DD):");
-		if (fecha == null || fecha.trim().isEmpty()) return;
-
-		String presupuesto = JOptionPane.showInputDialog(null, "Presupuesto:");
-		if (presupuesto == null || presupuesto.trim().isEmpty()) return;
-
-		try {
-			conexion.conectar();
-			String sql = "INSERT INTO reserva (destino, fecha, presupuesto, id_usuario) VALUES ('"
-					+ destino + "', '" + fecha + "', '" + presupuesto + "', " + idUsuario + ")";
-			conexion.ejecutarInsertDeleteUpdate(sql);
-			conexion.desconectar();
-			cargarReservas(); // Recarga la tabla para mostrar la nueva fila con su id
-			JOptionPane.showMessageDialog(null, "Reserva añadida correctamente.");
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Error al añadir reserva: " + ex.getMessage());
-		}
+		CrearReserva ventana = new CrearReserva(idUsuario, this);
+		ventana.setVisible(true);
 	}
 }

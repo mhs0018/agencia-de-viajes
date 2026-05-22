@@ -67,7 +67,9 @@ public class Reservas extends JFrame {
 		table = new JTable(modelo);
 		table.getColumnModel().getColumn(0).setMinWidth(0);
 		table.getColumnModel().getColumn(0).setMaxWidth(0);
+		table.getColumnModel().getColumn(0).setPreferredWidth(0);
 		table.getColumnModel().getColumn(0).setWidth(0);
+		table.getColumnModel().getColumn(0).setResizable(false);
 
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.setBounds(10, 50, 500, 200);
@@ -179,45 +181,8 @@ public class Reservas extends JFrame {
 		String fecha = (String) modelo.getValueAt(fila, 2);
 		String presupuesto = (String) modelo.getValueAt(fila, 3);
 
-		String nuevoDestino = JOptionPane.showInputDialog(null, "Destino:", destino);
-		if (nuevoDestino == null) {
-			return;
-		}
-
-		String nuevaFecha = JOptionPane.showInputDialog(null, "Fecha (YYYY-MM-DD):", fecha);
-		if (nuevaFecha == null) {
-			return;
-		}
-
-		String nuevoPresupuesto = JOptionPane.showInputDialog(null, "Presupuesto:", presupuesto);
-		if (nuevoPresupuesto == null) {
-			return;
-		}
-
-		try {
-			conexion.conectar();
-			String sql = "UPDATE reserva SET "
-					+ "destino = '" + nuevoDestino + "', "
-					+ "fecha = '" + nuevaFecha + "', "
-					+ "presupuesto = '" + nuevoPresupuesto + "' "
-					+ "WHERE id_reserva = " + idReserva;
-			conexion.ejecutarInsertDeleteUpdate(sql);
-
-			modelo.setValueAt(nuevoDestino, fila, 1);
-			modelo.setValueAt(nuevaFecha, fila, 2);
-			modelo.setValueAt(nuevoPresupuesto, fila, 3);
-
-			JOptionPane.showMessageDialog(null, "Reserva modificada correctamente.");
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Error al modificar: " + ex.getMessage());
-		} finally {
-			try {
-				conexion.desconectar();
-			} catch (SQLException ex) {
-				ex.printStackTrace();
-			}
-		}
+		ModificarReserva ventana = new ModificarReserva(idReserva, destino, fecha, presupuesto, this);
+		ventana.setVisible(true);
 	}
 
 	private void nuevaReserva() {

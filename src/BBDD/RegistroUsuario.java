@@ -111,7 +111,7 @@ public class RegistroUsuario extends JFrame {
 		contentPane.add(text_Email);
 		text_Email.setColumns(10);
 
-		JButton btn_Insertar = new JButton("Sign in");
+		JButton btn_Insertar = new JButton("Sign up");
 		btn_Insertar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -126,7 +126,7 @@ public class RegistroUsuario extends JFrame {
 					conexion.ejecutarInsertDeleteUpdate(sentencia);
 					conexion.desconectar();
 
-					JOptionPane.showMessageDialog(null, "Usuario introducido correctamente");
+					JOptionPane.showMessageDialog(null, "Usuario creado correctamente");
 
 					text_Usuario.setText("");
 					text_Pass.setText("");
@@ -139,10 +139,22 @@ public class RegistroUsuario extends JFrame {
 				}
 				Login x = new Login();
 				x.setVisible(true);
+				dispose();
 			}
 		});
-		btn_Insertar.setBounds(174, 205, 84, 20);
+		btn_Insertar.setBounds(143, 205, 84, 20);
 		contentPane.add(btn_Insertar);
+
+		JButton btn_Volver = new JButton("Log in");
+		btn_Volver.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Login x = new Login();
+				x.setVisible(true);
+				dispose();
+			}
+		});
+		btn_Volver.setBounds(237, 205, 84, 20);
+		contentPane.add(btn_Volver);
 
 	}
 }

@@ -112,6 +112,7 @@ public class Login extends JFrame {
 					ventanaReservas.setVisible(true);
 					text_Usuario.setText("");
 					text_Pass.setText("");
+					dispose();
 				} catch (SQLException ex) {
 					ex.printStackTrace();
 					JOptionPane.showMessageDialog(null, "Error de conexión: " + ex.getMessage());

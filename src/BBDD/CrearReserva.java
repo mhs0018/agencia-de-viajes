@@ -68,41 +68,17 @@ public class CrearReserva extends JFrame {
         setContentPane(contentPane);
         contentPane.setLayout(null);
 
-        JLabel lblTitulo = new JLabel("Nueva Reserva");
-        lblTitulo.setFont(new Font("Tahoma", Font.PLAIN, 22));
-        lblTitulo.setBounds(130, 10, 200, 30);
-        contentPane.add(lblTitulo);
+        crearEtiqueta("Nueva Reserva", 130, 10, 200, 30, 22);
+        crearEtiqueta("Destino:", 40, 70, 100, 20, 16);
+        crearEtiqueta("Fecha:", 40, 110, 100, 20, 16);
+        crearEtiqueta("Presupuesto:", 40, 150, 120, 20, 16);
 
-        JLabel lblDestino = new JLabel("Destino:");
-        lblDestino.setFont(new Font("Tahoma", Font.PLAIN, 16));
-        lblDestino.setBounds(40, 70, 100, 20);
-        contentPane.add(lblDestino);
+        textDestino = crearCampoTexto(160, 70, 180, 20);
+        textFecha = crearCampoTexto(160, 110, 180, 20);
+        textPresupuesto = crearCampoTexto(160, 150, 180, 20);
 
-        textDestino = new JTextField();
-        textDestino.setBounds(160, 70, 180, 20);
-        contentPane.add(textDestino);
-
-        JLabel lblFecha = new JLabel("Fecha:");
-        lblFecha.setFont(new Font("Tahoma", Font.PLAIN, 16));
-        lblFecha.setBounds(40, 110, 100, 20);
-        contentPane.add(lblFecha);
-
-        textFecha = new JTextField();
-        textFecha.setBounds(160, 110, 180, 20);
-        contentPane.add(textFecha);
-
-        JLabel lblPresupuesto = new JLabel("Presupuesto:");
-        lblPresupuesto.setFont(new Font("Tahoma", Font.PLAIN, 16));
-        lblPresupuesto.setBounds(40, 150, 120, 20);
-        contentPane.add(lblPresupuesto);
-
-        textPresupuesto = new JTextField();
-        textPresupuesto.setBounds(160, 150, 180, 20);
-        contentPane.add(textPresupuesto);
-
-        JButton btnGuardar = new JButton("Guardar");
+        JButton btnGuardar = crearBoton("Guardar");
         btnGuardar.setBounds(140, 220, 150, 25);
-        contentPane.add(btnGuardar);
 
         btnGuardar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -180,5 +156,26 @@ public class CrearReserva extends JFrame {
         textDestino.setText(destino);
         textFecha.setText(fecha);
         textPresupuesto.setText(presupuesto);
+    }
+
+    private JLabel crearEtiqueta(String texto, int x, int y, int ancho, int alto, int tamanoFuente) {
+        JLabel etiqueta = new JLabel(texto);
+        etiqueta.setFont(new Font("Tahoma", Font.PLAIN, tamanoFuente));
+        etiqueta.setBounds(x, y, ancho, alto);
+        contentPane.add(etiqueta);
+        return etiqueta;
+    }
+
+    private JTextField crearCampoTexto(int x, int y, int ancho, int alto) {
+        JTextField campo = new JTextField();
+        campo.setBounds(x, y, ancho, alto);
+        contentPane.add(campo);
+        return campo;
+    }
+
+    private JButton crearBoton(String texto) {
+        JButton boton = new JButton(texto);
+        contentPane.add(boton);
+        return boton;
     }
 }

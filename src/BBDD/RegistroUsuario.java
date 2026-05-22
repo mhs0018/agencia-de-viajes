@@ -21,15 +21,11 @@ public class RegistroUsuario extends JFrame {
 	private JTextField text_Usuario;
 	private JTextField text_Pass;
 
-	// Creo el objeto que gestiona la conexión con la base de datos.
 	public ConexionMySQL conexion = new ConexionMySQL("root", "", "agencia-viajes");
 	private JTextField text_NombreA;
 	private JTextField text_DNI;
 	private JTextField text_Email;
 
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -43,9 +39,6 @@ public class RegistroUsuario extends JFrame {
 		});
 	}
 
-	/**
-	 * Create the frame.
-	 */
 	public RegistroUsuario() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(200, 200, 450, 300);
@@ -54,7 +47,7 @@ public class RegistroUsuario extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		JLabel lbl_Titulo = new JLabel("¡Bienvenido!");
+		JLabel lbl_Titulo = new JLabel("Â¡Bienvenido!");
 		lbl_Titulo.setFont(new Font("Tahoma", Font.PLAIN, 25));
 		lbl_Titulo.setBounds(151, 10, 145, 22);
 		contentPane.add(lbl_Titulo);
@@ -64,25 +57,25 @@ public class RegistroUsuario extends JFrame {
 		lbl_Usuario.setBounds(48, 42, 84, 18);
 		contentPane.add(lbl_Usuario);
 
-		JLabel lbl_Pass = new JLabel("Contraseña");
+		JLabel lbl_Pass = new JLabel("ContraseÃ±a");
 		lbl_Pass.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		lbl_Pass.setBounds(48, 70, 108, 22);
 		contentPane.add(lbl_Pass);
 
-		JLabel lblNewLabel = new JLabel("Nombre y apellidos");
-		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblNewLabel.setBounds(48, 104, 145, 13);
-		contentPane.add(lblNewLabel);
+		JLabel lblNombreCompleto = new JLabel("Nombre y apellidos");
+		lblNombreCompleto.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblNombreCompleto.setBounds(48, 104, 145, 13);
+		contentPane.add(lblNombreCompleto);
 
-		JLabel lblNewLabel_1 = new JLabel("DNI");
-		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblNewLabel_1.setBounds(48, 127, 44, 12);
-		contentPane.add(lblNewLabel_1);
+		JLabel lblDni = new JLabel("DNI");
+		lblDni.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblDni.setBounds(48, 127, 44, 12);
+		contentPane.add(lblDni);
 
-		JLabel lblNewLabel_2 = new JLabel("Email");
-		lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblNewLabel_2.setBounds(48, 156, 44, 12);
-		contentPane.add(lblNewLabel_2);
+		JLabel lblEmail = new JLabel("Email");
+		lblEmail.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblEmail.setBounds(48, 156, 44, 12);
+		contentPane.add(lblEmail);
 
 		text_Usuario = new JTextField();
 		text_Usuario.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -111,19 +104,19 @@ public class RegistroUsuario extends JFrame {
 		contentPane.add(text_Email);
 		text_Email.setColumns(10);
 
-		JButton btn_Insertar = new JButton("Sign up");
-		btn_Insertar.addActionListener(new ActionListener() {
+		JButton btnSignUp = new JButton("Sign up");
+		btnSignUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					conexion.conectar();
 					String nombre = text_Usuario.getText();
-					String contraseña = text_Pass.getText();
-					String NApellido = text_NombreA.getText();
-					String DNI = text_DNI.getText();
-					String Email = text_Email.getText();
-					String sentencia = "INSERT INTO USUARIOS (USUARIO,CONTRASEÑA,NOMBRE_COMPLETO,DNI,EMAIL) VALUES ('"
-							+ nombre + ",'" + contraseña + ",'" + NApellido + ",'" + DNI + ",'" + Email + "')";
-					conexion.ejecutarInsertDeleteUpdate(sentencia);
+					String contrasena = text_Pass.getText();
+					String nombreApellido = text_NombreA.getText();
+					String dni = text_DNI.getText();
+					String email = text_Email.getText();
+					String sql = "INSERT INTO USUARIOS (USUARIO,CONTRASEÃ‘A,NOMBRE_COMPLETO,DNI,EMAIL) VALUES ('"
+							+ nombre + ",'" + contrasena + ",'" + nombreApellido + ",'" + dni + ",'" + email + "')";
+					conexion.ejecutarInsertDeleteUpdate(sql);
 					conexion.desconectar();
 
 					JOptionPane.showMessageDialog(null, "Usuario creado correctamente");
@@ -134,27 +127,26 @@ public class RegistroUsuario extends JFrame {
 					text_DNI.setText("");
 					text_Email.setText("");
 
-				} catch (SQLException e1) {
-					e1.printStackTrace();
+				} catch (SQLException ex) {
+					ex.printStackTrace();
 				}
-				Login x = new Login();
-				x.setVisible(true);
+				Login ventanaLogin = new Login();
+				ventanaLogin.setVisible(true);
 				dispose();
 			}
 		});
-		btn_Insertar.setBounds(143, 205, 84, 20);
-		contentPane.add(btn_Insertar);
+		btnSignUp.setBounds(143, 205, 84, 20);
+		contentPane.add(btnSignUp);
 
-		JButton btn_Volver = new JButton("Log in");
-		btn_Volver.addActionListener(new ActionListener() {
+		JButton btnVolver = new JButton("Log in");
+		btnVolver.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Login x = new Login();
-				x.setVisible(true);
+				Login ventanaLogin = new Login();
+				ventanaLogin.setVisible(true);
 				dispose();
 			}
 		});
-		btn_Volver.setBounds(237, 205, 84, 20);
-		contentPane.add(btn_Volver);
-
+		btnVolver.setBounds(237, 205, 84, 20);
+		contentPane.add(btnVolver);
 	}
 }

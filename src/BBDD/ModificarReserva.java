@@ -50,64 +50,34 @@ public class ModificarReserva extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		JLabel lbl_Titulo = new JLabel("Modificar Reserva");
-		lbl_Titulo.setFont(new Font("Tahoma", Font.PLAIN, 25));
-		lbl_Titulo.setBounds(102, 10, 231, 22);
-		contentPane.add(lbl_Titulo);
+		crearEtiqueta("Modificar Reserva", 102, 10, 231, 22, 25);
+		crearEtiqueta("Destino", 48, 42, 84, 18, 12);
+		crearEtiqueta("Fecha", 48, 70, 108, 22, 12);
+		crearEtiqueta("Presupuesto", 48, 104, 145, 13, 12);
 
-		JLabel lbl_Destino = new JLabel("Destino");
-		lbl_Destino.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lbl_Destino.setBounds(48, 42, 84, 18);
-		contentPane.add(lbl_Destino);
-
-		JLabel lbl_Fecha = new JLabel("Fecha");
-		lbl_Fecha.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lbl_Fecha.setBounds(48, 70, 108, 22);
-		contentPane.add(lbl_Fecha);
-
-		JLabel lbl_Presupuesto = new JLabel("Presupuesto");
-		lbl_Presupuesto.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lbl_Presupuesto.setBounds(48, 104, 145, 13);
-		contentPane.add(lbl_Presupuesto);
-
-		textDestino = new JTextField();
-		textDestino.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		textDestino.setBounds(211, 42, 125, 18);
-		contentPane.add(textDestino);
-		textDestino.setColumns(10);
-
-		textFecha = new JTextField();
-		textFecha.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		textFecha.setBounds(211, 70, 125, 18);
-		contentPane.add(textFecha);
-		textFecha.setColumns(10);
-
-		textPresupuesto = new JTextField();
-		textPresupuesto.setBounds(211, 98, 125, 18);
-		contentPane.add(textPresupuesto);
-		textPresupuesto.setColumns(10);
+		textDestino = crearCampoTexto(211, 42, 125, 18, 18);
+		textFecha = crearCampoTexto(211, 70, 125, 18, 18);
+		textPresupuesto = crearCampoTexto(211, 98, 125, 18, 18);
 
 		textDestino.setText(destino);
 		textFecha.setText(fecha);
 		textPresupuesto.setText(presupuesto);
 
-		JButton btn_Guardar = new JButton("Guardar");
-		btn_Guardar.addActionListener(new ActionListener() {
+		JButton btnGuardar = crearBoton("Guardar");
+		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				modificarReserva();
 			}
 		});
-		btn_Guardar.setBounds(143, 205, 84, 20);
-		contentPane.add(btn_Guardar);
+		btnGuardar.setBounds(143, 205, 84, 20);
 
-		JButton btn_Volver = new JButton("Volver");
-		btn_Volver.addActionListener(new ActionListener() {
+		JButton btnVolver = crearBoton("Volver");
+		btnVolver.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
 			}
 		});
-		btn_Volver.setBounds(237, 205, 84, 20);
-		contentPane.add(btn_Volver);
+		btnVolver.setBounds(237, 205, 84, 20);
 	}
 
 	private void modificarReserva() {
@@ -145,5 +115,28 @@ public class ModificarReserva extends JFrame {
 				ex.printStackTrace();
 			}
 		}
+	}
+
+	private JLabel crearEtiqueta(String texto, int x, int y, int ancho, int alto, int tamanoFuente) {
+		JLabel etiqueta = new JLabel(texto);
+		etiqueta.setFont(new Font("Tahoma", Font.PLAIN, tamanoFuente));
+		etiqueta.setBounds(x, y, ancho, alto);
+		contentPane.add(etiqueta);
+		return etiqueta;
+	}
+
+	private JTextField crearCampoTexto(int x, int y, int ancho, int alto, int tamanoFuente) {
+		JTextField campo = new JTextField();
+		campo.setFont(new Font("Tahoma", Font.PLAIN, tamanoFuente));
+		campo.setBounds(x, y, ancho, alto);
+		campo.setColumns(10);
+		contentPane.add(campo);
+		return campo;
+	}
+
+	private JButton crearBoton(String texto) {
+		JButton boton = new JButton(texto);
+		contentPane.add(boton);
+		return boton;
 	}
 }

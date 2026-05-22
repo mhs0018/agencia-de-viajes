@@ -79,8 +79,8 @@ public class Login extends JFrame {
 		contentPane.add(text_Pass);
 		text_Pass.setColumns(10);
 
-		JButton btn_Insertar = new JButton("Log in");
-		btn_Insertar.addActionListener(new ActionListener() {
+		JButton btnLogin = new JButton("Log in");
+		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String usuario = text_Usuario.getText().trim();
 				String pass = text_Pass.getText().trim();
@@ -124,17 +124,17 @@ public class Login extends JFrame {
 				}
 			}
 		});
-		btn_Insertar.setBounds(123, 205, 84, 20);
-		contentPane.add(btn_Insertar);
+		btnLogin.setBounds(123, 205, 84, 20);
+		contentPane.add(btnLogin);
 
-		JButton btn_SingUp = new JButton("Sing Up");
-		btn_SingUp.addActionListener(new ActionListener() {
+		JButton btnSignUp = new JButton("Sing Up");
+		btnSignUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				RegistroUsuario x = new RegistroUsuario();
-				x.setVisible(true);
+				RegistroUsuario ventanaRegistro = new RegistroUsuario();
+				ventanaRegistro.setVisible(true);
 			}
 		});
-		btn_SingUp.setBounds(217, 206, 95, 19);
-		contentPane.add(btn_SingUp);
+		btnSignUp.setBounds(217, 206, 95, 19);
+		contentPane.add(btnSignUp);
 	}
 }

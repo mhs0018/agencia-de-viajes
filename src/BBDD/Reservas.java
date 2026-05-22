@@ -124,11 +124,7 @@ public class Reservas extends JFrame {
 			ex.printStackTrace();
 			JOptionPane.showMessageDialog(null, "Error al cargar reservas: " + ex.getMessage());
 		} finally {
-			try {
-				conexion.desconectar();
-			} catch (SQLException ex) {
-				ex.printStackTrace();
-			}
+			cerrarConexion();
 		}
 	}
 
@@ -160,11 +156,7 @@ public class Reservas extends JFrame {
 				ex.printStackTrace();
 				JOptionPane.showMessageDialog(null, "Error al eliminar: " + ex.getMessage());
 			} finally {
-				try {
-					conexion.desconectar();
-				} catch (SQLException ex) {
-					ex.printStackTrace();
-				}
+				cerrarConexion();
 			}
 		}
 	}
@@ -188,5 +180,13 @@ public class Reservas extends JFrame {
 	private void nuevaReserva() {
 		CrearReserva ventana = new CrearReserva(idUsuario, this);
 		ventana.setVisible(true);
+	}
+
+	private void cerrarConexion() {
+		try {
+			conexion.desconectar();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
 	}
 }

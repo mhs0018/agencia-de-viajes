@@ -93,6 +93,7 @@ public class Login extends JFrame {
 				try {
 					conexion.conectar();
 
+					// Primero comprobamos si el usuario existe para poder mostrar un aviso más preciso.
 					String sql = "SELECT * FROM usuario WHERE usuario = '" + usuario + "'";
 					ResultSet rs = conexion.ejecutarSelect(sql);
 

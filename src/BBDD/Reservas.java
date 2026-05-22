@@ -70,6 +70,8 @@ public class Reservas extends JFrame {
 		table.setColumnSelectionAllowed(false);
 		table.setCellSelectionEnabled(false);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		// El id se mantiene en el modelo para modificar/eliminar la reserva correcta,
+		// pero la columna queda completamente oculta al usuario.
 		table.getColumnModel().getColumn(0).setMinWidth(0);
 		table.getColumnModel().getColumn(0).setMaxWidth(0);
 		table.getColumnModel().getColumn(0).setPreferredWidth(0);
@@ -183,6 +185,8 @@ public class Reservas extends JFrame {
 	}
 
 	private void nuevaReserva() {
+		// La ventana de creación recibe el id del usuario logueado para guardar
+		// la reserva asociada a ese usuario y recargar esta tabla al terminar.
 		CrearReserva ventana = new CrearReserva(idUsuario, this);
 		ventana.setVisible(true);
 	}

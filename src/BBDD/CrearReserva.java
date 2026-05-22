@@ -118,6 +118,8 @@ public class CrearReserva extends JFrame {
             }
 
             if (idUsuario > 0) {
+                // Cuando la ventana se abre desde Reservas, ya conocemos el usuario
+                // y la reserva se inserta directamente en la base de datos.
                 String sql = "INSERT INTO reserva (destino, fecha, presupuesto, id_usuario) VALUES ('"
                         + destino + "', '" + fecha + "', '" + presupuesto + "', " + idUsuario + ")";
                 conexion.ejecutarInsertDeleteUpdate(sql);
@@ -145,17 +147,6 @@ public class CrearReserva extends JFrame {
                 ex.printStackTrace();
             }
         }
-    }
-
-    /**
-     * Constructor secundario para rellenar datos existentes.
-     */
-    public CrearReserva(String destino, String fecha, String presupuesto) {
-        this();
-        setTitle("Modificar reserva");
-        textDestino.setText(destino);
-        textFecha.setText(fecha);
-        textPresupuesto.setText(presupuesto);
     }
 
     private JLabel crearEtiqueta(String texto, int x, int y, int ancho, int alto, int tamanoFuente) {

@@ -100,6 +100,7 @@ public class ModificarReserva extends JFrame {
 			conexion.ejecutarInsertDeleteUpdate(sql);
 
 			if (ventanaReservas != null) {
+				// Refresca la tabla de la ventana principal para reflejar el cambio al cerrar esta.
 				ventanaReservas.recargarReservas();
 			}
 

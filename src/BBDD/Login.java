@@ -22,7 +22,7 @@ public class Login extends JFrame {
 	private JTextField text_Usuario;
 	private JTextField text_Pass;
 
-	// Creo el objeto que gestiona la conexión con la base de datos.
+	// Creo el objeto que gestiona la conexion con la base de datos.
 	public ConexionMySQL conexion = new ConexionMySQL("root", "", "agencia-viajes");
 
 	/**
@@ -52,33 +52,39 @@ public class Login extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
+		// Etiqueta del titulo
 		JLabel lbl_Titulo = new JLabel("¡Bienvenido!");
 		lbl_Titulo.setFont(new Font("Tahoma", Font.PLAIN, 25));
 		lbl_Titulo.setBounds(151, 10, 145, 22);
 		contentPane.add(lbl_Titulo);
 
+		// Etiqueta del usuario
 		JLabel lbl_Usuario = new JLabel("Usuario");
 		lbl_Usuario.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		lbl_Usuario.setBounds(48, 70, 108, 22);
 		contentPane.add(lbl_Usuario);
 
+		// Etiqueta de la contraseña
 		JLabel lbl_Pass = new JLabel("Contraseña");
 		lbl_Pass.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		lbl_Pass.setBounds(48, 113, 108, 22);
 		contentPane.add(lbl_Pass);
 
+		// Campo usuario
 		text_Usuario = new JTextField();
 		text_Usuario.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		text_Usuario.setBounds(211, 75, 125, 18);
 		contentPane.add(text_Usuario);
 		text_Usuario.setColumns(10);
 
+		// Campo contraseña
 		text_Pass = new JTextField();
 		text_Pass.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		text_Pass.setBounds(211, 118, 125, 18);
 		contentPane.add(text_Pass);
 		text_Pass.setColumns(10);
 
+		// Boton de acceso
 		JButton btnLogin = new JButton("Log in");
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -93,7 +99,7 @@ public class Login extends JFrame {
 				try {
 					conexion.conectar();
 
-					// Primero comprobamos si el usuario existe para poder mostrar un aviso más preciso.
+					// Primero comprobamos si el usuario existe para poder mostrar un aviso mas preciso.
 					String sql = "SELECT * FROM usuario WHERE usuario = '" + usuario + "'";
 					ResultSet rs = conexion.ejecutarSelect(sql);
 

@@ -26,6 +26,9 @@ public class RegistroUsuario extends JFrame {
 	private JTextField text_DNI;
 	private JTextField text_Email;
 
+	/**
+	 * Launch the application.
+	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -39,6 +42,9 @@ public class RegistroUsuario extends JFrame {
 		});
 	}
 
+	/**
+	 * Create the frame.
+	 */
 	public RegistroUsuario() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(200, 200, 450, 300);
@@ -108,15 +114,16 @@ public class RegistroUsuario extends JFrame {
 		btnSignUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					// Conecta con la BD
 					conexion.conectar();
-					String nombre = text_Usuario.getText();
-					String contrasena = text_Pass.getText();
+					String nombre = text_Usuario.getText(); // Lee el texto de la casilla nombre del formulario
+					String contrasena = text_Pass.getText(); // Pasa a entero el texto leido de la casilla número
 					String nombreApellido = text_NombreA.getText();
 					String dni = text_DNI.getText();
 					String email = text_Email.getText();
 					String sql = "INSERT INTO USUARIOS (USUARIO,CONTRASEÑA,NOMBRE_COMPLETO,DNI,EMAIL) VALUES ('"
 							+ nombre + ",'" + contrasena + ",'" + nombreApellido + ",'" + dni + ",'" + email + "')";
-					conexion.ejecutarInsertDeleteUpdate(sql);
+					conexion.ejecutarInsertDeleteUpdate(sql); // Manda la orden a la base de datos
 					conexion.desconectar();
 
 					JOptionPane.showMessageDialog(null, "Usuario creado correctamente");

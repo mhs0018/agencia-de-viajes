@@ -30,7 +30,7 @@ public class CrearReserva extends JFrame {
     private Reservas ventanaReservas;
 
     /**
-     * Método main para ejecutar esta ventana de forma independiente.
+     * Launch the application.
      */
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
@@ -46,7 +46,7 @@ public class CrearReserva extends JFrame {
     }
 
     /**
-     * Constructor principal.
+     * Create the frame.
      */
     public CrearReserva() {
         this(0, null);
@@ -88,7 +88,7 @@ public class CrearReserva extends JFrame {
     }
 
     /**
-     * Comprueba si la fecha ya está ocupada por otra reserva.
+     * Comprueba si la fecha ya esta ocupada por otra reserva.
      */
     private boolean fechaDisponible(String fecha) throws SQLException {
         String sql = "SELECT id_reserva FROM reserva WHERE fecha = '" + fecha + "'";
@@ -97,7 +97,7 @@ public class CrearReserva extends JFrame {
     }
 
     /**
-     * Guarda la nueva reserva si los datos son válidos.
+     * Guarda la nueva reserva si los datos son validos.
      */
     private void guardarReserva() {
         String destino = textDestino.getText().trim();

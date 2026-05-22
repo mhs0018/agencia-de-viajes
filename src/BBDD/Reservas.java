@@ -29,6 +29,9 @@ public class Reservas extends JFrame {
 	private DefaultTableModel modelo;
 	private int idUsuario;
 
+	/**
+	 * Launch the application.
+	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -42,6 +45,9 @@ public class Reservas extends JFrame {
 		});
 	}
 
+	/**
+	 * Create the frame.
+	 */
 	public Reservas(String usuarioLogueado, int idUsuario) {
 		this.idUsuario = idUsuario;
 

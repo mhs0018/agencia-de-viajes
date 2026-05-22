@@ -26,6 +26,9 @@ public class ModificarReserva extends JFrame {
 	private int idReserva;
 	private Reservas ventanaReservas;
 
+	/**
+	 * Launch the application.
+	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -39,6 +42,9 @@ public class ModificarReserva extends JFrame {
 		});
 	}
 
+	/**
+	 * Create the frame.
+	 */
 	public ModificarReserva(int idReserva, String destino, String fecha, String presupuesto, Reservas ventanaReservas) {
 		this.idReserva = idReserva;
 		this.ventanaReservas = ventanaReservas;

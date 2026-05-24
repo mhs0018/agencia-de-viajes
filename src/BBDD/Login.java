@@ -22,11 +22,12 @@ public class Login extends JFrame {
 	private JTextField text_Usuario;
 	private JTextField text_Pass;
 
-	// Creo el objeto que gestiona la conexion con la base de datos.
+	// Creo el objeto que gestiona la conexión con la base de datos
+	// Se puede reutilizar la misma instancia para varias consultas
 	public ConexionMySQL conexion = new ConexionMySQL("root", "", "agencia-viajes");
 
 	/**
-	 * Launch the application.
+	 * Launch the application
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -42,7 +43,7 @@ public class Login extends JFrame {
 	}
 
 	/**
-	 * Create the frame.
+	 * Create the frame
 	 */
 	public Login() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -91,6 +92,8 @@ public class Login extends JFrame {
 				String usuario = text_Usuario.getText().trim();
 				String pass = text_Pass.getText().trim();
 
+				// Quita espacios en blanco no deseados para evitar errores por un espacio accidental
+				// Luego valida que la contraseña tenga exactamente 12 caracteres
 				if (pass.length() != 12) {
 					JOptionPane.showMessageDialog(null, "La contraseña debe tener exactamente 12 caracteres");
 					return;
@@ -99,24 +102,30 @@ public class Login extends JFrame {
 				try {
 					conexion.conectar();
 
-					// Primero comprobamos si el usuario existe para poder mostrar un aviso mas preciso.
+					// Consulta el usuario por nombre para comprobar su existencia
+					// En una aplicación más segura se debería usar PreparedStatement en lugar de concatenar
 					String sql = "SELECT * FROM usuario WHERE usuario = '" + usuario + "'";
 					ResultSet rs = conexion.ejecutarSelect(sql);
 
+					// Si no hay registros, el usuario no existe en la base de datos
 					if (!rs.next()) {
 						JOptionPane.showMessageDialog(null, "El usuario no existe");
 						return;
 					}
 
+					// Compara la contraseña ingresada con la contraseña guardada
 					String passGuardada = rs.getString("contraseña");
 					if (!pass.equals(passGuardada)) {
 						JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos");
 						return;
 					}
 
+					// Si el login fue correcto, abre la ventana de reservas del usuario
 					int idUsuario = rs.getInt("id_usuario");
 					Reservas ventanaReservas = new Reservas(usuario, idUsuario);
 					ventanaReservas.setVisible(true);
+
+					// Limpia los campos en este formulario antes de cerrarlo
 					text_Usuario.setText("");
 					text_Pass.setText("");
 					dispose();
@@ -124,6 +133,7 @@ public class Login extends JFrame {
 					ex.printStackTrace();
 					JOptionPane.showMessageDialog(null, "Error de conexión: " + ex.getMessage());
 				} finally {
+					// Siempre cierra la conexión para liberar recursos
 					try {
 						conexion.desconectar();
 					} catch (SQLException ex) {
@@ -138,6 +148,8 @@ public class Login extends JFrame {
 		JButton btnSignUp = new JButton("Sing Up");
 		btnSignUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				// Abre la ventana de registro sin cerrar esta pantalla
+				// De esta forma el usuario puede volver al login fácilmente
 				RegistroUsuario ventanaRegistro = new RegistroUsuario();
 				ventanaRegistro.setVisible(true);
 			}

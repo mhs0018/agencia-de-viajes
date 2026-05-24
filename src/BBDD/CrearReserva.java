@@ -30,7 +30,7 @@ public class CrearReserva extends JFrame {
     private Reservas ventanaReservas;
 
     /**
-     * Launch the application.
+     * Launch the application
      */
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
@@ -46,14 +46,14 @@ public class CrearReserva extends JFrame {
     }
 
     /**
-     * Create the frame.
+     * Create the frame
      */
     public CrearReserva() {
         this(0, null);
     }
 
     /**
-     * Constructor para crear una nueva reserva ligada a un usuario.
+     * Constructor para crear una nueva reserva ligada a un usuario
      */
     public CrearReserva(int idUsuario, Reservas ventanaReservas) {
         this.idUsuario = idUsuario;
@@ -88,55 +88,63 @@ public class CrearReserva extends JFrame {
     }
 
     /**
-     * Comprueba si la fecha ya esta ocupada por otra reserva.
+     * Comprueba si la fecha ya esta ocupada por otra reserva
      */
     private boolean fechaDisponible(String fecha) throws SQLException {
-        String sql = "SELECT id_reserva FROM reserva WHERE fecha = '" + fecha + "'";
-        ResultSet rs = conexion.ejecutarSelect(sql);
-        return !rs.next();
-    }
+		// Comprueba si ya existe una reserva para la misma fecha
+		// Nota: no se filtra por usuario, por lo que la fecha queda reservada globalmente,
+		// no solo para el usuario logueado Esto evita reservas duplicadas en la misma fecha
+		return !rs.next();
+	}
 
-    /**
-     * Guarda la nueva reserva si los datos son validos.
-     */
-    private void guardarReserva() {
-        String destino = textDestino.getText().trim();
-        String fecha = textFecha.getText().trim();
-        String presupuesto = textPresupuesto.getText().trim();
+	/**
+	 * Guarda la nueva reserva si los datos son validos
+	 */
+	private void guardarReserva() {
+		// Lee los campos de entrada del formulario
+		String destino = textDestino.getText().trim();
+		String fecha = textFecha.getText().trim();
+		String presupuesto = textPresupuesto.getText().trim();
 
-        if (destino.isEmpty() || fecha.isEmpty() || presupuesto.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Rellene todos los campos");
-            return;
-        }
+		// Comprueba que el usuario haya completado todos los campos
+		if (destino.isEmpty() || fecha.isEmpty() || presupuesto.isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Rellene todos los campos");
+			return;
+		}
 
-        try {
-            conexion.conectar();
+		try {
+			conexion.conectar();
 
-            if (!fechaDisponible(fecha)) {
-                JOptionPane.showMessageDialog(null, "Introduzca una fecha disponible");
-                return;
-            }
+			// Verifica que la fecha no esté ya reservada por otra reserva
+			if (!fechaDisponible(fecha)) {
+				JOptionPane.showMessageDialog(null, "Introduzca una fecha disponible");
+				return;
+			}
 
-            if (idUsuario > 0) {
-                // Cuando la ventana se abre desde Reservas, ya conocemos el usuario
-                // y la reserva se inserta directamente en la base de datos.
-                String sql = "INSERT INTO reserva (destino, fecha, presupuesto, id_usuario) VALUES ('"
-                        + destino + "', '" + fecha + "', '" + presupuesto + "', " + idUsuario + ")";
-                conexion.ejecutarInsertDeleteUpdate(sql);
+			if (idUsuario > 0) {
+				// Inserta la nueva reserva en la base de datos para el usuario logueado
+				// El id de usuario asegura que la reserva se asocia al perfil correcto
+				String sql = "INSERT INTO reserva (destino, fecha, presupuesto, id_usuario) VALUES ('"
+						+ destino + "', '" + fecha + "', '" + presupuesto + "', " + idUsuario + ")";
+				conexion.ejecutarInsertDeleteUpdate(sql);
 
-                if (ventanaReservas != null) {
-                    ventanaReservas.recargarReservas();
-                }
+				if (ventanaReservas != null) {
+					// Refresca la lista de reservas en la ventana principal
+					ventanaReservas.recargarReservas();
+				}
 
-                JOptionPane.showMessageDialog(null, "Reserva realizada");
-                dispose();
-                return;
-            }
+				JOptionPane.showMessageDialog(null, "Reserva realizada");
+				dispose();
+				return;
+			}
 
-            JOptionPane.showMessageDialog(null,
-                    "Datos guardados:\nDestino: " + destino
-                            + "\nFecha: " + fecha
-                            + "\nPresupuesto: " + presupuesto);
+			// Si no hay usuario asociado, solo mostramos un mensaje de confirmación
+			// Esto ocurre cuando se utiliza el constructor vacío para pruebas
+			// No se guarda en la base de datos porque falta el id de usuario
+			JOptionPane.showMessageDialog(null,
+					"Datos guardados:\nDestino: " + destino
+						+ "\nFecha: " + fecha
+						+ "\nPresupuesto: " + presupuesto);
         } catch (SQLException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(null, "Error al guardar la reserva: " + ex.getMessage());

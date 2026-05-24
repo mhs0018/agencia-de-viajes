@@ -30,7 +30,7 @@ public class Reservas extends JFrame {
 	private int idUsuario;
 
 	/**
-	 * Launch the application.
+	 * Launch the application
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -46,7 +46,7 @@ public class Reservas extends JFrame {
 	}
 
 	/**
-	 * Create the frame.
+	 * Create the frame
 	 */
 	public Reservas(String usuarioLogueado, int idUsuario) {
 		this.idUsuario = idUsuario;
@@ -63,6 +63,10 @@ public class Reservas extends JFrame {
 		lbl_Titulo.setBounds(10, 10, 500, 25);
 		contentPane.add(lbl_Titulo);
 
+		// Define el modelo de la tabla con las columnas visibles y ocultas
+		// La columna id_reserva se mantiene en el modelo para operaciones internas,
+		// pero no se muestra al usuario
+		// Esto permite eliminar/modificar usando el identificador real sin exponerlo
 		modelo = new DefaultTableModel(
 				new Object[] { "id_reserva", "Destino", "Fecha", "Presupuesto" }, 0) {
 			@Override
@@ -77,7 +81,7 @@ public class Reservas extends JFrame {
 		table.setCellSelectionEnabled(false);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		// El id se mantiene en el modelo para modificar/eliminar la reserva correcta,
-		// pero la columna queda completamente oculta al usuario.
+		// pero la columna queda completamente oculta al usuario
 		table.getColumnModel().getColumn(0).setMinWidth(0);
 		table.getColumnModel().getColumn(0).setMaxWidth(0);
 		table.getColumnModel().getColumn(0).setPreferredWidth(0);
@@ -119,12 +123,16 @@ public class Reservas extends JFrame {
 	}
 
 	private void cargarReservas() {
+		// Limpia todas las filas existentes de la tabla antes de cargar los datos nuevos
 		modelo.setRowCount(0);
 		try {
+			// Abre la conexión con la base de datos
 			conexion.conectar();
+			// Consulta las reservas que pertenecen al usuario actualmente logueado
 			String sql = "SELECT id_reserva, destino, fecha, presupuesto "
 					+ "FROM reserva WHERE id_usuario = " + idUsuario;
 			ResultSet rs = conexion.ejecutarSelect(sql);
+			// Recorre los resultados y añade una fila por cada reserva en el modelo de la tabla
 			while (rs.next()) {
 				modelo.addRow(new Object[] {
 						rs.getInt("id_reserva"),
@@ -137,68 +145,80 @@ public class Reservas extends JFrame {
 			ex.printStackTrace();
 			JOptionPane.showMessageDialog(null, "Error al cargar reservas: " + ex.getMessage());
 		} finally {
+			// Cierra la conexión con la base de datos aunque haya ocurrido un error
 			cerrarConexion();
 		}
 	}
 
 	public void recargarReservas() {
+		// Método de ayuda para que otras ventanas puedan refrescar esta lista
 		cargarReservas();
 	}
 
 	private void eliminarReserva() {
+		// Obtiene la fila seleccionada de la tabla
 		int fila = table.getSelectedRow();
+		// Si no hay fila seleccionada, no hay reserva para borrar
 		if (fila == -1) {
 			JOptionPane.showMessageDialog(null, "Seleccione una reserva para eliminar");
 			return;
 		}
 
+		// Recupera el id de la reserva almacenado en la fila oculta
 		int idReserva = (int) modelo.getValueAt(fila, 0);
 
+		// Pide confirmación al usuario antes de borrar la reserva
 		int confirmacion = JOptionPane.showConfirmDialog(null,
 				"¿Seguro que quiere eliminar esta reserva?",
 				"Confirmar", JOptionPane.YES_NO_OPTION);
 
 		if (confirmacion == JOptionPane.YES_OPTION) {
 			try {
+				// Elimina el registro de la base de datos
 				conexion.conectar();
 				String sql = "DELETE FROM reserva WHERE id_reserva = " + idReserva;
 				conexion.ejecutarInsertDeleteUpdate(sql);
+				// Elimina la fila de la tabla local para reflejar el cambio
 				modelo.removeRow(fila);
 				JOptionPane.showMessageDialog(null, "Reserva eliminada");
 			} catch (SQLException ex) {
 				ex.printStackTrace();
 				JOptionPane.showMessageDialog(null, "Error al eliminar: " + ex.getMessage());
 			} finally {
+				// Cierra la conexión después de la operación
 				cerrarConexion();
 			}
 		}
 	}
 
 	private void modificarReserva() {
+		// Verifica que se haya seleccionado una reserva antes de abrir el editor
 		int fila = table.getSelectedRow();
 		if (fila == -1) {
 			JOptionPane.showMessageDialog(null, "Selecciona una reserva para modificar.");
 			return;
 		}
 
+		// Obtiene los datos de la reserva seleccionada para pasarlos al formulario de edición
 		int idReserva = (int) modelo.getValueAt(fila, 0);
 		String destino = (String) modelo.getValueAt(fila, 1);
 		String fecha = (String) modelo.getValueAt(fila, 2);
 		String presupuesto = (String) modelo.getValueAt(fila, 3);
 
+		// Abre la ventana de modificación con los datos actuales de la reserva
 		ModificarReserva ventana = new ModificarReserva(idReserva, destino, fecha, presupuesto, this);
 		ventana.setVisible(true);
 	}
 
 	private void nuevaReserva() {
-		// La ventana de creación recibe el id del usuario logueado para guardar
-		// la reserva asociada a ese usuario y recargar esta tabla al terminar.
+		// Abre la ventana para crear una nueva reserva asociada al usuario actual
 		CrearReserva ventana = new CrearReserva(idUsuario, this);
 		ventana.setVisible(true);
 	}
 
 	private void cerrarConexion() {
 		try {
+			// Cierra la conexión con la base de datos de forma segura
 			conexion.desconectar();
 		} catch (SQLException ex) {
 			ex.printStackTrace();

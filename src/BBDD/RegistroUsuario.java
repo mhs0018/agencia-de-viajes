@@ -27,7 +27,7 @@ public class RegistroUsuario extends JFrame {
 	private JTextField text_Email;
 
 	/**
-	 * Launch the application.
+	 * Launch the application
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -43,7 +43,7 @@ public class RegistroUsuario extends JFrame {
 	}
 
 	/**
-	 * Create the frame.
+	 * Create the frame
 	 */
 	public RegistroUsuario() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -114,29 +114,40 @@ public class RegistroUsuario extends JFrame {
 		btnSignUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					// Conecta con la BD
+					// Abre la conexión con la base de datos para registrar al nuevo usuario
+					// Nota: este formulario no realiza validación de formato ni comprueba si el usuario ya existe
 					conexion.conectar();
-					String nombre = text_Usuario.getText(); // Lee el texto de la casilla nombre del formulario
-					String contrasena = text_Pass.getText(); // Pasa a entero el texto leido de la casilla número
+					String nombre = text_Usuario.getText(); // Lee el usuario escrito en el formulario
+					String contrasena = text_Pass.getText(); // Lee la contraseña ingresada
 					String nombreApellido = text_NombreA.getText();
 					String dni = text_DNI.getText();
 					String email = text_Email.getText();
+					// Construye la consulta SQL que insertará el nuevo registro
+					// Nota: los valores se concatenan directamente, por lo que en una aplicación real
+					// convendría usar PreparedStatement para evitar inyección SQL
 					String sql = "INSERT INTO USUARIOS (USUARIO,CONTRASEÑA,NOMBRE_COMPLETO,DNI,EMAIL) VALUES ('"
-							+ nombre + ",'" + contrasena + ",'" + nombreApellido + ",'" + dni + ",'" + email + "')";
-					conexion.ejecutarInsertDeleteUpdate(sql); // Manda la orden a la base de datos
-					conexion.desconectar();
+						+ nombre + "', '" + contrasena + "', '" + nombreApellido + "', '" + dni + "', '" + email + "')";
+					conexion.ejecutarInsertDeleteUpdate(sql); // Ejecuta la consulta en la base de datos
 
 					JOptionPane.showMessageDialog(null, "Usuario creado correctamente");
 
+					// Limpia los campos del formulario después de crear el usuario
 					text_Usuario.setText("");
 					text_Pass.setText("");
 					text_NombreA.setText("");
 					text_DNI.setText("");
 					text_Email.setText("");
-
 				} catch (SQLException ex) {
 					ex.printStackTrace();
+					JOptionPane.showMessageDialog(null, "Error al crear usuario: " + ex.getMessage());
+				} finally {
+					try {
+						conexion.desconectar();
+					} catch (SQLException ex) {
+						ex.printStackTrace();
+					}
 				}
+				// Después de registrar el usuario, vuelve a la pantalla de login
 				Login ventanaLogin = new Login();
 				ventanaLogin.setVisible(true);
 				dispose();

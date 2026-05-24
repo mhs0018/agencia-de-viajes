@@ -27,7 +27,7 @@ public class ModificarReserva extends JFrame {
 	private Reservas ventanaReservas;
 
 	/**
-	 * Launch the application.
+	 * Launch the application
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -43,7 +43,7 @@ public class ModificarReserva extends JFrame {
 	}
 
 	/**
-	 * Create the frame.
+	 * Create the frame
 	 */
 	public ModificarReserva(int idReserva, String destino, String fecha, String presupuesto, Reservas ventanaReservas) {
 		this.idReserva = idReserva;
@@ -87,10 +87,12 @@ public class ModificarReserva extends JFrame {
 	}
 
 	private void modificarReserva() {
+		// Lee los datos ingresados por el usuario en el formulario de edición
 		String destino = textDestino.getText().trim();
 		String fecha = textFecha.getText().trim();
 		String presupuesto = textPresupuesto.getText().trim();
 
+		// Verifica que el formulario esté completo antes de guardar
 		if (destino.isEmpty() || fecha.isEmpty() || presupuesto.isEmpty()) {
 			JOptionPane.showMessageDialog(null, "Rellena todos los campos");
 			return;
@@ -98,6 +100,8 @@ public class ModificarReserva extends JFrame {
 
 		try {
 			conexion.conectar();
+			// Actualiza la reserva seleccionada en la base de datos
+			// Usamos el id de reserva para asegurar que solo se modifica el registro correcto
 			String sql = "UPDATE reserva SET "
 					+ "destino = '" + destino + "', "
 					+ "fecha = '" + fecha + "', "
@@ -106,7 +110,8 @@ public class ModificarReserva extends JFrame {
 			conexion.ejecutarInsertDeleteUpdate(sql);
 
 			if (ventanaReservas != null) {
-				// Refresca la tabla de la ventana principal para reflejar el cambio al cerrar esta.
+				// Si la ventana principal está disponible, actualiza su tabla con la reserva modificada
+				// En el caso de ejecutar esta ventana de forma independiente, ventanaReservas será null
 				ventanaReservas.recargarReservas();
 			}
 

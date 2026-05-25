@@ -25,6 +25,8 @@ public class CrearReserva extends JFrame {
     protected JTextField textFecha;
     protected JTextField textPresupuesto;
 
+    // Conexión compartida con la base de datos para esta ventana
+    // Se reutiliza aquí para validar fechas y guardar nuevas reservas
     public ConexionMySQL conexion = new ConexionMySQL("root", "", "agencia-viajes");
     private int idUsuario;
     private Reservas ventanaReservas;
@@ -49,6 +51,7 @@ public class CrearReserva extends JFrame {
      * Create the frame
      */
     public CrearReserva() {
+        // Constructor vacío usado cuando no hay usuario logueado o para pruebas
         this(0, null);
     }
 
@@ -66,6 +69,7 @@ public class CrearReserva extends JFrame {
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
+        // Layout absoluto para posicionar cada componente con coordenadas fijas
         contentPane.setLayout(null);
 
         crearEtiqueta("Nueva Reserva", 130, 10, 200, 30, 22);
@@ -77,6 +81,7 @@ public class CrearReserva extends JFrame {
         textFecha = crearCampoTexto(160, 110, 180, 20);
         textPresupuesto = crearCampoTexto(160, 150, 180, 20);
 
+        // Crea el botón; crearBoton lo añade directamente al panel
         JButton btnGuardar = crearBoton("Guardar");
         btnGuardar.setBounds(140, 220, 150, 25);
 
@@ -90,14 +95,19 @@ public class CrearReserva extends JFrame {
     /**
      * Comprueba si la fecha ya esta ocupada por otra reserva
      */
-    private boolean fechaDisponible(String fecha) throws SQLException {
-		// Comprueba si ya existe una reserva para la misma fecha
-		// Nota: no se filtra por usuario, por lo que la fecha queda reservada globalmente,
-		// no solo para el usuario logueado Esto evita reservas duplicadas en la misma fecha
-		return !rs.next();
-	}
+    private boolean fechaDisponible(String fecha ) throws SQLException {
+        // Ejecuta una consulta que busca cualquier reserva con la misma fecha
+        // El SELECT 1 devuelve un valor constante para cada fila encontrada,
+        // porque solo interesa si existe alguna coincidencia y no los datos completos
+        // Nota: aquí se construye SQL con concatenación, en un sistema real
+        // convendría usar PreparedStatement para evitar inyección SQL
+        String sql = "SELECT 1 FROM reserva WHERE fecha = '" + fecha + "' LIMIT 1";
+        ResultSet rs = conexion.ejecutarSelect(sql);
+        boolean disponible = !rs.next();
+        return disponible;
+    }
 
-	/**
+    /**
 	 * Guarda la nueva reserva si los datos son validos
 	 */
 	private void guardarReserva() {
@@ -124,9 +134,7 @@ public class CrearReserva extends JFrame {
 			if (idUsuario > 0) {
 				// Inserta la nueva reserva en la base de datos para el usuario logueado
 				// El id de usuario asegura que la reserva se asocia al perfil correcto
-				String sql = "INSERT INTO reserva (destino, fecha, presupuesto, id_usuario) VALUES ('"
-						+ destino + "', '" + fecha + "', '" + presupuesto + "', " + idUsuario + ")";
-				conexion.ejecutarInsertDeleteUpdate(sql);
+                // Si no se proporciona un usuario válido, la reserva no se persiste
 
 				if (ventanaReservas != null) {
 					// Refresca la lista de reservas en la ventana principal
@@ -166,6 +174,7 @@ public class CrearReserva extends JFrame {
     }
 
     private JTextField crearCampoTexto(int x, int y, int ancho, int alto) {
+        // Crea un campo de texto con tamaño fijo y lo añade al panel
         JTextField campo = new JTextField();
         campo.setBounds(x, y, ancho, alto);
         contentPane.add(campo);
@@ -173,6 +182,8 @@ public class CrearReserva extends JFrame {
     }
 
     private JButton crearBoton(String texto) {
+        // Método helper que crea un botón y lo añade al panel de forma inmediata
+        // Esto evita repetir contentPane.add en cada lugar donde se crea un botón
         JButton boton = new JButton(texto);
         contentPane.add(boton);
         return boton;

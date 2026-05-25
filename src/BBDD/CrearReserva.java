@@ -17,6 +17,9 @@ import javax.swing.border.EmptyBorder;
 
 public class CrearReserva extends JFrame {
 
+    // Identificador de versión para serializar la clase JFrame
+    // Evita excepciones de incompatibilidad si la clase se guarda y se carga
+    // desde un flujo de objetos en versiones diferentes
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
 

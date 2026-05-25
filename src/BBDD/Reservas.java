@@ -76,6 +76,8 @@ public class Reservas extends JFrame {
 		};
 
 		table = new JTable(modelo);
+		// Configura la tabla para que el usuario solo pueda seleccionar filas completas
+		// y no pueda seleccionar columnas o celdas individuales.
 		table.setRowSelectionAllowed(true);
 		table.setColumnSelectionAllowed(false);
 		table.setCellSelectionEnabled(false);
@@ -88,10 +90,14 @@ public class Reservas extends JFrame {
 		table.getColumnModel().getColumn(0).setWidth(0);
 		table.getColumnModel().getColumn(0).setResizable(false);
 
+		// Envuelve la tabla en un JScrollPane para añadir barras de desplazamiento
+		// cuando el contenido excede el tamaño visible de la ventana.
+		// Esto hace que la tabla sea navegable aunque tenga muchas filas o columnas.
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.setBounds(10, 50, 500, 200);
 		contentPane.add(scrollPane);
 
+		// Botón eliminar reserva
 		JButton btn_Eliminar = new JButton("Eliminar");
 		btn_Eliminar.setBounds(10, 270, 140, 30);
 		btn_Eliminar.addActionListener(new ActionListener() {
@@ -101,6 +107,7 @@ public class Reservas extends JFrame {
 		});
 		contentPane.add(btn_Eliminar);
 
+		// Botón modificar reserva
 		JButton btn_Modificar = new JButton("Modificar");
 		btn_Modificar.setBounds(165, 270, 140, 30);
 		btn_Modificar.addActionListener(new ActionListener() {
@@ -110,6 +117,7 @@ public class Reservas extends JFrame {
 		});
 		contentPane.add(btn_Modificar);
 
+		// Botón nueva reserva
 		JButton btn_Nueva = new JButton("Nueva Reserva");
 		btn_Nueva.setBounds(320, 270, 160, 30);
 		btn_Nueva.addActionListener(new ActionListener() {
@@ -142,6 +150,7 @@ public class Reservas extends JFrame {
 				});
 			}
 		} catch (SQLException ex) {
+			// Mostrar el error completo por consola
 			ex.printStackTrace();
 			JOptionPane.showMessageDialog(null, "Error al cargar reservas: " + ex.getMessage());
 		} finally {
@@ -158,7 +167,7 @@ public class Reservas extends JFrame {
 	private void eliminarReserva() {
 		// Obtiene la fila seleccionada de la tabla
 		int fila = table.getSelectedRow();
-		// Si no hay fila seleccionada, no hay reserva para borrar
+		// Si no hay fila seleccionada no hay reserva para borrar
 		if (fila == -1) {
 			JOptionPane.showMessageDialog(null, "Seleccione una reserva para eliminar");
 			return;
@@ -167,7 +176,7 @@ public class Reservas extends JFrame {
 		// Recupera el id de la reserva almacenado en la fila oculta
 		int idReserva = (int) modelo.getValueAt(fila, 0);
 
-		// Pide confirmación al usuario antes de borrar la reserva
+		// Confirmación al usuario antes de borrar la reserva
 		int confirmacion = JOptionPane.showConfirmDialog(null,
 				"¿Seguro que quiere eliminar esta reserva?",
 				"Confirmar", JOptionPane.YES_NO_OPTION);

@@ -115,7 +115,7 @@ public class RegistroUsuario extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					// Abre la conexión con la base de datos para registrar al nuevo usuario
-					// Nota: este formulario no realiza validación de formato ni comprueba si el usuario ya existe
+					// N: este formulario no realiza validación de formato ni comprueba si el usuario ya existe
 					conexion.conectar();
 					String nombre = text_Usuario.getText(); // Lee el usuario escrito en el formulario
 					String contrasena = text_Pass.getText(); // Lee la contraseña ingresada
@@ -123,7 +123,7 @@ public class RegistroUsuario extends JFrame {
 					String dni = text_DNI.getText();
 					String email = text_Email.getText();
 					// Construye la consulta SQL que insertará el nuevo registro
-					// Nota: los valores se concatenan directamente, por lo que en una aplicación real
+					// N: los valores se concatenan directamente, por lo que en una aplicación real
 					// convendría usar PreparedStatement para evitar inyección SQL
 					String sql = "INSERT INTO USUARIOS (USUARIO,CONTRASEÑA,NOMBRE_COMPLETO,DNI,EMAIL) VALUES ('"
 						+ nombre + "', '" + contrasena + "', '" + nombreApellido + "', '" + dni + "', '" + email + "')";
